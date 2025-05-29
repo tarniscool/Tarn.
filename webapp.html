@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Aura</title>
+    <link rel="icon" href="https://placehold.co/32x32/030612/A78BFA?text=A" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-glow: rgba(167, 139, 250, 0.7);
+            --secondary-glow: rgba(129, 140, 248, 0.6);
+            --tertiary-glow: rgba(244, 114, 182, 0.5);
+            --bg-deep-space: #030612; 
+            --text-nebula-bright: #e0e7ff; 
+            --text-star-white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep-space);
+            color: var(--text-nebula-bright);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            cursor: none; 
+            scrollbar-width: none; 
+            -ms-overflow-style: none;  
+        }
+        body::-webkit-scrollbar { display: none; } 
+        
+        html {
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
+        }
+        html::-webkit-scrollbar { display: none; } 
+
+
+        #celestialCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; 
+        }
+        
+        .custom-cursor {
+            width: 12px;
+            height: 12px;
+            background-color: var(--primary-glow);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10001;
+            mix-blend-mode: difference; 
+            transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease, transform 0.1s linear;
+            opacity: 0; 
+        }
+        .custom-cursor-outer {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--primary-glow);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10000;
+            transition: width 0.4s ease, height 0.4s ease, opacity 0.3s ease, transform 0.15s linear;
+            opacity: 0; 
+        }
+        body:hover .custom-cursor, body:hover .custom-cursor-outer { opacity: 1; }
+        
+        :is(a, button, .cta-button-hero):hover ~ .custom-cursor { transform: translate(-50%, -50%) scale(2.5); background-color: rgba(255,255,255,0.5); }
+        :is(a, button, .cta-button-hero):hover ~ .custom-cursor-outer { transform: translate(-50%, -50%) scale(1.5); opacity: 0.3; }
+
+
+        .page-wrapper {
+            width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .content-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 20px;
+            position: relative; 
+            z-index: 1;
+            text-align: center;
+            opacity: 0; 
+            transform: translateY(50px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        @media (min-width: 640px) {
+            .content-section {
+                padding: 100px 40px; 
+            }
+        }
+        .content-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-section h1 {
+            font-size: clamp(2.2rem, 7vw, 5rem);
+            font-weight: 900;
+            color: var(--text-star-white);
+            margin-bottom: 20px;
+            line-height: 1.1;
+            text-shadow: 0 0 15px var(--primary-glow), 0 0 30px var(--secondary-glow);
+        }
+         .hero-section h1.sub-hero-text {
+            font-size: clamp(2.8rem, 9vw, 6rem);
+        }
+
+        .hero-section .highlight-text {
+            background: -webkit-linear-gradient(45deg, #A78BFA, #F472B6, #818CF8, #A78BFA);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px var(--tertiary-glow));
+            animation: gradientShineTitle 7s ease infinite;
+        }
+        @keyframes gradientShineTitle { 
+            0%{background-position:0% 51%}
+            50%{background-position:100% 50%}
+            100%{background-position:0% 51%}
+        }
+
+        .hero-section p.subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--text-nebula-bright);
+            max-width: 800px;
+            margin: 25px auto 35px;
+            line-height: 1.7;
+            text-shadow: 0 0 5px rgba(224, 231, 255, 0.3);
+        }
+
+        .cta-button-hero {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--secondary-glow), var(--primary-glow));
+            color: var(--text-star-white);
+            padding: 16px 35px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: clamp(0.85rem, 1.8vw, 1rem);
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 25px rgba(129, 140, 248, 0.4);
+            border: 1px solid rgba(167, 139, 250, 0.5);
+        }
+        .cta-button-hero:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(129, 140, 248, 0.6);
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: var(--text-star-white);
+            margin-bottom: 40px;
+            position: relative;
+            text-shadow: 0 0 10px var(--secondary-glow);
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 70px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-glow), var(--tertiary-glow));
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        .narrative-block {
+            max-width: 900px;
+            margin: 0 auto 40px;
+            padding: 30px;
+            background-color: rgba(10, 15, 26, 0.7);
+            backdrop-filter: blur(10px) saturate(150%);
+            -webkit-backdrop-filter: blur(10px) saturate(150%);
+            border-radius: 16px;
+            border: 1px solid rgba(129, 140, 248, 0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .narrative-block h3 {
+            font-size: clamp(1.3rem, 3.5vw, 2rem);
+            color: var(--primary-glow);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .narrative-block p {
+            font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        .narrative-block p:last-child { margin-bottom: 0; }
+
+        .feature-showcase {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px; 
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        @media (min-width: 640px) {
+            .feature-showcase {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 40px;
+            }
+        }
+
+        .feature-item {
+            background-color: rgba(30, 41, 59, 0.5); 
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-glow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2), 0 0 20px var(--primary-glow);
+        }
+        .feature-item .icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            color: var(--primary-glow);
+        }
+        .feature-item h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-star-white);
+            margin-bottom: 10px;
+        }
+        .feature-item p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-nebula-bright);
+        }
+
+        .contact-link-section {
+            margin-top: 40px;
+        }
+
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-deep-space);
+            z-index: 10002; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s 0.2s ease-out, visibility 0.8s 0.2s ease-out; 
+        }
+        #loader-wrapper.loaded {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-inner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(129, 140, 248, 0.3);
+            border-top-color: var(--primary-glow);
+            border-radius: 50%;
+            animation: spinLoader 1s linear infinite;
+        }
+        @keyframes spinLoader {
+            to { transform: rotate(360deg); }
+        }
+
+        footer { 
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--text-nebula-bright);
+            background-color: rgba(10, 15, 26, 0.8); 
+            position: relative; 
+            z-index: 1;
+            width: 100%; 
+        }
+        footer p {
+            font-size: 0.85rem;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="loader-wrapper">
+        <div class="loader-inner"></div>
+    </div>
+
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-outer"></div>
+    <canvas id="celestialCanvas"></canvas>
+
+    <div class="page-wrapper">
+        <section class="content-section hero-section">
+            <h1>Your looking at our</h1>
+            <h1 class="sub-hero-text"><span class="highlight-text">Project Aura</span></h1>
+            <p class="subtitle">
+                This Project is a Conceptual showcase for showing what we can do with design and development.
+            </p>
+            <a href="#the-philosophy" class="cta-button-hero">Learn more!</a>
+        </section>
+
+        <section id="the-philosophy" class="content-section">
+            <h2 class="section-title">More about this project</h2>
+            <div class="narrative-block">
+                <h3>How much time did this project took us?</h3>
+                <p>
+                    Believe it or not, this project was created in just 2 days.
+                    We wanted to show you what we can do with design and development, so we created this project as a conceptual showcase,
+                    and can do much more than this.            
+                </p>
+            </div>
+            <div class="narrative-block">
+                <h3>What is this project based on?</h3>
+                <p>
+                    Inspired by the ethereal beauty of cosmic phenomena, this project embodies the essence of a digital aura – a radiant, immersive experience that captivates and enchants.
+                    The design philosophy revolves around creating a sense of wonder and exploration, much like gazing into the depths of a galaxy or feeling the gentle embrace of an aurora.
+                </p>
+            </div>
+        </section>
+        
+        <section id="features-showcase" class="content-section">
+            <h2 class="section-title">Project Aura: Key Features</h2>
+            <div class="feature-showcase">
+                <div class="feature-item">
+                    <div class="icon">🌌</div>
+                    <h4>Dynamic Cosmic Canvas</h4>
+                    <p>A generative art background with interactive stars and nebulae particles, creating an ever-changing, immersive celestial environment that subtly reacts to user presence.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">✨</div>
+                    <h4>Elegant Scrollytelling</h4>
+                    <p>Content sections gracefully fade and animate into view as the user scrolls, guiding them through a narrative journey with smooth, cinematic transitions.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">🔮</div>
+                    <h4>Refined Microinteractions</h4>
+                    <p>A custom animated cursor and subtle hover effects on interactive elements provide tactile feedback, enhancing the premium feel and user engagement.</p>
+                </div>
+                 <div class="feature-item">
+                    <div class="icon">💎</div>
+                    <h4>Premium Visual Aesthetics</h4>
+                    <p>Sophisticated typography, a deep space color palette with vibrant aura-like glows, and glassmorphic UI elements contribute to a high-end, polished visual identity.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contact-cta" class="content-section">
+            <h2 class="section-title">Ready to Illuminate Your Vision?</h2>
+            <p class="subtitle" style="font-size: clamp(1rem, 2.5vw, 1.25rem); max-width: 700px;">
+                If you dream of a web presence that's not just seen, but felt – an experience that captures the essence of your brand with breathtaking beauty – let's talk.
+            </p>
+            <div class="contact-link-section">
+                <a href="contactme.html" class="cta-button-hero" style="background: linear-gradient(45deg, var(--tertiary-glow), var(--primary-glow)); box-shadow: 0 8px 25px rgba(244, 114, 182, 0.4);">
+                    Contact Me
+                </a>
+            </div>
+            <div class="contact-link-section" style="margin-top: 20px;">
+                <a href="index.html" class="cta-button-hero" style="background: linear-gradient(45deg, var(--tertiary-glow), var(--primary-glow)); box-shadow: 0 8px 25px rgba(244, 114, 182, 0.4);">
+                    Go Back
+                </a>
+            </div>
+        </section>
+    
+        <footer>
+            <p>&copy; <span id="currentYear"></span> Tarn.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loaderWrapper = document.getElementById('loader-wrapper');
+            if (loaderWrapper) {
+                const fallbackTimeout = setTimeout(() => {
+                    if (!loaderWrapper.classList.contains('loaded')) {
+                        loaderWrapper.classList.add('loaded');
+                        setTimeout(() => { loaderWrapper.style.display = 'none'; }, 1000);
+                    }
+                }, 3500);
+
+                window.addEventListener('load', () => {
+                    clearTimeout(fallbackTimeout); 
+                    loaderWrapper.classList.add('loaded');
+                    setTimeout(() => {
+                        loaderWrapper.style.display = 'none';
+                    }, 1000); 
+                });
+            }
+            
+            const canvas = document.getElementById('celestialCanvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let stars = [];
+            let hue = 210; 
+            let mouse = { x: undefined, y: undefined, radius: 70 };
+
+            const customCursor = document.querySelector('.custom-cursor');
+            const customCursorOuter = document.querySelector('.custom-cursor-outer');
+
+            if (customCursor && customCursorOuter) {
+                window.addEventListener('mousemove', e => {
+                    customCursor.style.left = e.clientX + 'px';
+                    customCursor.style.top = e.clientY + 'px';
+                    customCursorOuter.style.left = e.clientX + 'px';
+                    customCursorOuter.style.top = e.clientY + 'px';
+                });
+                
+                document.querySelectorAll('a, button, .cta-button-hero').forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        customCursor.style.transform = 'translate(-50%, -50%) scale(2.8)';
+                        customCursor.style.backgroundColor = 'rgba(255,255,255,0.3)';
+                        customCursorOuter.style.transform = 'translate(-50%, -50%) scale(1.8)';
+                        customCursorOuter.style.opacity = '0.2';
+                    });
+                    el.addEventListener('mouseleave', () => {
+                        customCursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                        customCursor.style.backgroundColor = 'var(--primary-glow)';
+                        customCursorOuter.style.transform = 'translate(-50%, -50%) scale(1)';
+                        customCursorOuter.style.opacity = '0.7';
+                    });
+                });
+                document.addEventListener('mouseleave', () => {
+                    if(customCursor) customCursor.style.opacity = '0';
+                    if(customCursorOuter) customCursorOuter.style.opacity = '0';
+                });
+                document.addEventListener('mouseenter', () => {
+                    if(customCursor) customCursor.style.opacity = '1';
+                    if(customCursorOuter) customCursorOuter.style.opacity = '0.7';
+                });
+            }
+
+
+            function setCanvasDimensions() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            setCanvasDimensions();
+            
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    setCanvasDimensions();
+                    initCelestialBodies();
+                }, 250); 
+            });
+
+             window.addEventListener('mousemove', (event) => {
+                mouse.x = event.clientX;
+                mouse.y = event.clientY;
+            });
+            window.addEventListener('mouseout', () => {
+                mouse.x = undefined;
+                mouse.y = undefined;
+            });
+
+
+            class CelestialBody {
+                constructor(x, y, size, speedX, speedY, color, isStar = true, isNebulaParticle = true) {
+                    this.x = x;
+                    this.y = y;
+                    this.size = size;
+                    this.speedX = speedX;
+                    this.speedY = speedY;
+                    this.color = color;
+                    this.isStar = isStar;
+                    this.isNebulaParticle = isNebulaParticle;
+                    this.initialSize = size;
+                    this.life = Math.random() * (this.isNebulaParticle ? 200 : 100); 
+                    this.maxLife = this.isStar ? Infinity : (this.isNebulaParticle ? Math.random() * 200 + 150 : Math.random() * 100 + 80);
+                    this.opacity = this.isStar ? Math.random() * 0.5 + 0.3 : 0; 
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    this.life++;
+
+                    if (!this.isStar) {
+                        const lifeRatio = Math.min(1, this.life / this.maxLife);
+                        this.opacity = Math.sin(Math.PI * lifeRatio) * 0.7; 
+                        if (this.isNebulaParticle) {
+                             this.size = this.initialSize * (1 - lifeRatio) * (Math.sin(this.life * 0.05) * 0.2 + 0.8); 
+                        }
+
+                        if (this.life >= this.maxLife) { 
+                            this.x = Math.random() * canvas.width;
+                            this.y = Math.random() * canvas.height;
+                            this.life = 0;
+                            this.opacity = 0; 
+                            this.size = this.initialSize;
+                            this.speedX = (Math.random() - 0.5) * (this.isNebulaParticle ? 0.05 : 0.15); 
+                            this.speedY = (Math.random() - 0.5) * (this.isNebulaParticle ? 0.05 : 0.15);
+                        }
+                    } else { 
+                        this.opacity = Math.sin(this.life * 0.01 + this.initialSize) * 0.3 + 0.3; 
+                         if (this.size > 0.05 && this.life % 100 < 50) this.size -= 0.0005; 
+                         else if (this.size < this.initialSize) this.size += 0.0005;
+                    }
+                    
+                    if (mouse.x !== undefined && !this.isStar) {
+                        let dx = this.x - mouse.x;
+                        let dy = this.y - mouse.y;
+                        let distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < mouse.radius + this.size) {
+                            const force = (mouse.radius + this.size - distance) / (mouse.radius + this.size);
+                            this.x += dx / distance * force * (this.isNebulaParticle ? 0.2 : 0.8); 
+                            this.y += dy / distance * force * (this.isNebulaParticle ? 0.2 : 0.8);
+                        }
+                    }
+
+                    if (this.x > canvas.width + this.size * 2) this.x = -this.size * 2;
+                    if (this.x < -this.size * 2) this.x = canvas.width + this.size * 2;
+                    if (this.y > canvas.height + this.size * 2) this.y = -this.size * 2;
+                    if (this.y < -this.size * 2) this.y = canvas.height + this.size * 2;
+                }
+                draw() {
+                    if (this.opacity <= 0.01 || this.size <= 0.01) return; 
+
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, Math.max(0, this.size), 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    if (this.isNebulaParticle || (this.isStar && this.size > 0.5)) { 
+                        ctx.shadowBlur = this.isNebulaParticle ? 12 : 6; 
+                        ctx.shadowColor = this.color;
+                    }
+                    ctx.globalAlpha = 1;
+                    ctx.shadowBlur = 0; 
+                }
+            }
+
+            function initCelestialBodies() {
+                particles = []; 
+                stars = [];     
+
+                let nebulaParticleCount = Math.floor((canvas.width * canvas.height) / 35000); 
+                nebulaParticleCount = Math.max(25, Math.min(80, nebulaParticleCount)); 
+                
+                let starCount = Math.floor((canvas.width * canvas.height) / 15000); 
+                starCount = Math.max(80, Math.min(300, starCount));
+
+                for (let i = 0; i < nebulaParticleCount; i++) {
+                    let size = Math.random() * 2.5 + 1.5; 
+                    let x = Math.random() * canvas.width;
+                    let y = Math.random() * canvas.height;
+                    let speedX = (Math.random() - 0.5) * 0.08; 
+                    let speedY = (Math.random() - 0.5) * 0.08;
+                    let H = (hue + Math.random() * 70 - 35) % 360;
+                    let S = Math.random() * 20 + 75; 
+                    let L = Math.random() * 15 + 65; 
+                    let color = `hsla(${H}, ${S}%, ${L}%, 0.5)`; 
+                    particles.push(new CelestialBody(x, y, size, speedX, speedY, color, false, true));
+                }
+
+                for (let i = 0; i < starCount; i++) {
+                    let size = Math.random() * 1.0 + 0.2; 
+                    let x = Math.random() * canvas.width;
+                    let y = Math.random() * canvas.height;
+                    let speedX = (Math.random() - 0.5) * 0.02; 
+                    let speedY = (Math.random() - 0.5) * 0.02;
+                    stars.push(new CelestialBody(x, y, size, speedX, speedY, `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.2})`, true));
+                }
+            }
+
+            function connectCloseParticles() {
+                 if (particles.length < 2) return;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < 110 && particles[i].opacity > 0.05 && particles[j].opacity > 0.05) { 
+                            ctx.beginPath();
+                            const opacity = (1 - distance / 110) * Math.min(particles[i].opacity, particles[j].opacity) * 0.2; 
+                            ctx.strokeStyle = `hsla(${(hue + 20) % 360}, 100%, 75%, ${opacity})`; 
+                            ctx.lineWidth = 0.2;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+            
+            let lastFrameTime = 0;
+            const targetFps = 1000; 
+            const frameDuration = 1000 / targetFps;
+
+            function animationLoop(currentTime) {
+                requestAnimationFrame(animationLoop);
+                const elapsed = currentTime - lastFrameTime;
+
+                if (elapsed >= frameDuration) { 
+                    lastFrameTime = currentTime - (elapsed % frameDuration);
+
+                    ctx.fillStyle = 'rgba(3, 6, 18, 0.2)'; 
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    stars.forEach(star => {
+                        star.update();
+                        star.draw();
+                    });
+                    particles.forEach(particle => {
+                        particle.update();
+                        particle.draw();
+                    });
+                    connectCloseParticles();
+
+                    hue = (hue + 0.05) % 360; 
+                }
+            }
+            
+            const currentYearElement = document.getElementById('currentYear');
+            if (currentYearElement) {
+                currentYearElement.textContent = new Date().getFullYear();
+            }
+
+            initCelestialBodies();
+             setTimeout(() => {
+                if (!loaderWrapper || loaderWrapper.classList.contains('loaded')) {
+                    requestAnimationFrame(animationLoop);
+                } else {
+                    setTimeout(() => requestAnimationFrame(animationLoop), 1200); 
+                }
+            }, 1000); 
+
+            const sections = document.querySelectorAll('.content-section');
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.15 }); 
+
+            sections.forEach(section => {
+                sectionObserver.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

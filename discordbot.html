@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarn 2.0 Discord Bot - Coming Soon!</title>
+    <link rel="icon" href="d078d8ed3146ca85812653b8bad10a0c.gif" type="image/gif">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body.coming-soon-body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A0F1A;
+            color: #E0E0E0;
+            overflow-x: hidden;
+            background-image: linear-gradient(to bottom, rgba(10, 15, 26, 0.97) 0%, rgba(12, 18, 32, 0.92) 60%, rgba(10, 15, 26, 0.99) 100%);
+        }
+
+        #background-gif-coming-soon {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.06;
+            filter: blur(4px) grayscale(0.2);
+        }
+
+        .content-above-gif {
+            position: relative;
+            z-index: 10;
+        }
+
+        .coming-soon-container {
+            background-color: rgba(17, 24, 39, 0.80);
+            backdrop-filter: blur(12px) saturate(160%); 
+            border: 1px solid rgba(70, 80, 100, 0.5);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35), 0 0 50px rgba(129, 140, 248, 0.1) inset;
+            border-radius: 1.25rem;
+        }
+
+        .feature-list li {
+            background-color: rgba(30, 41, 59, 0.7);
+            border-left: 4px solid #818CF8;
+        }
+
+        .progress-bar-bg {
+            background-color: rgba(45, 55, 72, 0.8);
+        }
+        .progress-bar-fill {
+            background-image: linear-gradient(45deg, #818CF8, #A78BFA);
+            animation: pulse-progress 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-progress {
+            0% { box-shadow: 0 0 5px rgba(129, 140, 248, 0.5); }
+            50% { box-shadow: 0 0 15px rgba(167, 139, 250, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(129, 140, 248, 0.5); }
+        }
+
+        .stay-tuned-button {
+            background-image: linear-gradient(45deg, #6366F1, #A78BFA); 
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        .stay-tuned-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+            filter: brightness(1.1);
+        }
+
+    </style>
+</head>
+<body class="coming-soon-body antialiased">
+
+    <img id="background-gif-coming-soon" src="Tarn-Transformers-(1).avif" alt="Animated background"> 
+
+    <div class="content-above-gif min-h-screen flex flex-col">
+
+        <header class="py-8 px-4 text-center animate-on-scroll"> 
+            <a href="index.html" class="text-5xl sm:text-6xl font-black text-white transition-all hover:opacity-90 hover:scale-105 transform duration-300 inline-block hover:text-shadow-lg">
+                Tarn<span class="huly-accent">.</span> 
+            </a>
+        </header>
+
+        <main class="flex-grow container mx-auto px-4 py-12 sm:py-16 flex items-center justify-center">
+            <div class="max-w-3xl w-full text-center"> 
+                <div class="coming-soon-container p-6 sm:p-10 md:p-12 animate-on-scroll" style="animation-delay: 0.1s;">
+                    
+                    <div class="mb-8">
+                        <i class="fas fa-cogs text-7xl sm:text-8xl text-purple-400 animate-spin" style="animation-duration: 10s;"></i>
+                    </div>
+
+                    <h2 class="section-heading text-4xl sm:text-5xl md:text-6xl mb-4 animate-on-scroll" style="animation-delay: 0.2s;">
+                        Tarn 2.0 Bot<span class="huly-accent">:</span> In Development.
+                    </h2>
+                    <p class="text-xl sm:text-2xl text-slate-200 leading-relaxed mb-8 animate-on-scroll" style="animation-delay: 0.3s;">
+                        The ultimate Discord sidekick is currently under construction!
+                    </p>
+
+                    <div class="mb-10 animate-on-scroll" style="animation-delay: 0.4s;">
+                        <h3 class="text-2xl font-semibold text-indigo-300 mb-4">Development Progress:</h3>
+                        <div class="progress-bar-bg w-full h-6 rounded-full overflow-hidden shadow-inner">
+                            <div class="progress-bar-fill h-full rounded-full" style="width: 65%;"></div> 
+                        </div>
+                        <p class="text-sm text-slate-400 mt-2">Estimated Launch: December</p>
+                    </div>
+                    
+                    <div class="mb-10 text-left animate-on-scroll" style="animation-delay: 0.5s;">
+                        <h3 class="text-2xl font-semibold text-indigo-300 mb-5 text-center">Anticipated Features:</h3>
+                        <ul class="space-y-3 feature-list max-w-md mx-auto">
+                            <li class="p-3 rounded-md shadow-sm"><i class="fas fa-shield-alt mr-3 text-purple-400"></i>Advanced Moderation Suite</li>
+                            <li class="p-3 rounded-md shadow-sm"><i class="fas fa-gamepad mr-3 text-purple-400"></i>Engaging Mini-Games & Economy</li>
+                            <li class="p-3 rounded-md shadow-sm"><i class="fas fa-music mr-3 text-purple-400"></i>High-Quality Music Playback</li>
+                            <li class="p-3 rounded-md shadow-sm"><i class="fas fa-cogs mr-3 text-purple-400"></i>Customizable Welcome & Utility Commands</li>
+                            <li class="p-3 rounded-md shadow-sm"><i class="fas fa-tachometer-alt mr-3 text-purple-400"></i>Web Dashboard for Easy Configuration</li>
+                        </ul>
+                    </div>
+
+                    <p class="text-lg text-slate-300 mb-8 animate-on-scroll" style="animation-delay: 0.6s;">
+                        Get ready for a bot that will redefine your server management and community engagement!
+                    </p>
+
+                    <div class="animate-on-scroll" style="animation-delay: 0.7s;">
+                        <a href="contactme.html" class="stay-tuned-button">
+                           <i class="fas fa-bell mr-2"></i> Stay Updated
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="py-12 border-t text-center mt-auto animate-on-scroll" style="animation-delay: 0.8s;">
+            <p class="text-slate-400 text-base">&copy; <span id="currentYear"></span> Tarn.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentYearElement = document.getElementById('currentYear');
+            if (currentYearElement) {
+                currentYearElement.textContent = new Date().getFullYear();
+            }
+
+            const animatedElements = document.querySelectorAll('.animate-on-scroll');
+            if (animatedElements.length > 0) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                        }
+                    });
+                }, { threshold: 0.1 });
+                animatedElements.forEach(el => { observer.observe(el); });
+            }
+        });
+    </script>
+</body>
+</html>
